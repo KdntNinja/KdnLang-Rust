@@ -5,7 +5,7 @@ pub enum TokenKind {
     // Literals
     Identifier(String),
     Number(i64),
-    
+
     // Operators
     Plus,     // +
     Minus,    // -

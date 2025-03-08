@@ -17,7 +17,7 @@ impl Token {
         &self.kind
     }
 
-    pub fn span(&self) -> SourceSpan {
+    pub fn _span(&self) -> SourceSpan {
         (self.start, self.end - self.start).into()
     }
 }
