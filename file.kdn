@@ -1,1 +1,6 @@
-var x: int = 2;
+index = 1
+
+while index > 10
+    print(index)
+    index = index - 1
+endwhile

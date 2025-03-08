@@ -7,11 +7,16 @@ pub enum TokenKind {
     Number(i64),
 
     // Operators
-    Plus,     // +
-    Minus,    // -
-    Asterisk, // *
-    Slash,    // /
-    Equals,   // =
+    Plus,        // +
+    Minus,       // -
+    Asterisk,    // *
+    Slash,       // /
+    Equals,      // =
+    GreaterThan, // >
+    LessThan,    // <
+    And,         // &&
+    Or,          // ||
+    Not,         // !
 
     // Delimiters
     LeftParen,         // (

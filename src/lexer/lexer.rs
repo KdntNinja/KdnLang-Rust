@@ -42,6 +42,8 @@ impl Lexer {
                 Some('*') => Ok(self.token(TokenKind::Asterisk)),
                 Some('/') => Ok(self.token(TokenKind::Slash)),
                 Some('=') => Ok(self.token(TokenKind::Equals)),
+                Some('>') => Ok(self.token(TokenKind::GreaterThan)),
+                Some('<') => Ok(self.token(TokenKind::LessThan)),
                 Some('(') => Ok(self.token(TokenKind::LeftParen)),
                 Some(')') => Ok(self.token(TokenKind::RightParen)),
                 Some('[') => Ok(self.token(TokenKind::LeftBracket)),
@@ -50,6 +52,33 @@ impl Lexer {
                 Some('}') => Ok(self.token(TokenKind::RightCurlyBracket)),
                 Some(';') => Ok(self.token(TokenKind::Semicolon)),
                 Some(':') => Ok(self.token(TokenKind::Colon)),
+                Some('&') => {
+                    self.advance();
+                    if self.ch == Some('&') {
+                        self.advance();
+                        Ok(self.token(TokenKind::And))
+                    } else {
+                        Err(LexerError::UnexpectedCharacter {
+                            character: '&',
+                            src: self.source.clone(),
+                            span: (self.position, 1).into(),
+                        })
+                    }
+                }
+                Some('|') => {
+                    self.advance();
+                    if self.ch == Some('|') {
+                        self.advance();
+                        Ok(self.token(TokenKind::Or))
+                    } else {
+                        Err(LexerError::UnexpectedCharacter {
+                            character: '|',
+                            src: self.source.clone(),
+                            span: (self.position, 1).into(),
+                        })
+                    }
+                }
+                Some('!') => Ok(self.token(TokenKind::Not)),
                 Some('0'..='9') => self.read_number(),
                 Some('a'..='z') | Some('A'..='Z') | Some('_') => self.read_identifier(),
                 Some(c) => Err(LexerError::UnexpectedCharacter {
