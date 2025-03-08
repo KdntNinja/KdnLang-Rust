@@ -49,6 +49,7 @@ impl Lexer {
                 Some('{') => Ok(self.token(TokenKind::LeftCurlyBracket)),
                 Some('}') => Ok(self.token(TokenKind::RightCurlyBracket)),
                 Some(';') => Ok(self.token(TokenKind::Semicolon)),
+                Some(':') => Ok(self.token(TokenKind::Colon)),
                 Some('0'..='9') => self.read_number(),
                 Some('a'..='z') | Some('A'..='Z') | Some('_') => self.read_identifier(),
                 Some(c) => Err(LexerError::UnexpectedCharacter {
