@@ -104,28 +104,31 @@ impl Interpreter {
                 Ok(())
             }
             Statement::FunctionCall { name, arguments } => {
-                // Handle built-in functions
-                if name == "print" {
-                    let mut arg_values = Vec::new();
-                    for arg in arguments {
-                        arg_values.push(self.evaluate_expression(arg)?);
-                    }
-
-                    // Print arguments
-                    for (i, value) in arg_values.iter().enumerate() {
-                        if i > 0 {
-                            print!(" ");
+                match name.as_str() {
+                    "print" => {
+                        let mut arg_values = Vec::new();
+                        for arg in arguments {
+                            arg_values.push(self.evaluate_expression(arg)?);
                         }
-                        print!("{}", value);
+
+                        // Print arguments
+                        for (i, value) in arg_values.iter().enumerate() {
+                            if i > 0 {
+                                print!(" ");
+                            }
+                            print!("{}", value);
+                        }
+                        println!();
+
+                        Ok(()) // Return an Ok result after printing
                     }
-                    println!();
-                    Ok(())
-                } else {
-                    Err(InterpreterError::RuntimeError {
-                        message: format!("Unknown function: {}", name),
-                        src: self.source.clone(),
-                        span: (0, 0).into(), // Ideally we'd have a real span here
-                    })
+                    _ => {
+                        Err(InterpreterError::RuntimeError {
+                            message: format!("Unknown function: {}", name),
+                            src: self.source.clone(),
+                            span: (0, 0).into(), // Ideally we'd have a real span here
+                        })
+                    }
                 }
             }
         }
