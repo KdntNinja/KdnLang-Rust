@@ -1,6 +1,6 @@
-use crate::lexer::lexer::Lexer;
-use crate::lexer::token::Token;
-use crate::lexer::token_kind::TokenKind;
+use crate::lexer::Lexer;
+use crate::lexer::Token;
+use crate::lexer::TokenKind;
 use crate::parser::ast::{Expression, Program, Statement};
 use crate::parser::error::ParserError;
 use crate::parser::statements::{function_call, if_statement, loop_statements};
@@ -40,7 +40,7 @@ impl<'a> Parser<'a> {
                     }
                     TokenKind::Whitespace(spaces) if self.line_start => {
                         // Count leading whitespace to determine indentation
-                        self.current_indentation = *spaces;
+                        self.current_indentation = *spaces; // Remove the dereference operator
                     }
                     _ if self.line_start => {
                         // First non-whitespace token on a line

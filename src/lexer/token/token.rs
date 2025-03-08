@@ -1,16 +1,18 @@
-use crate::lexer::token_kind::TokenKind;
+use crate::lexer::token::token_kind::TokenKind;
 use miette::SourceSpan;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Token {
     kind: TokenKind,
-    start: usize,
-    end: usize,
+    span: SourceSpan,
 }
 
 impl Token {
     pub fn new(kind: TokenKind, start: usize, end: usize) -> Self {
-        Token { kind, start, end }
+        Self {
+            kind,
+            span: (start, end - start).into(),
+        }
     }
 
     pub fn kind(&self) -> &TokenKind {
@@ -18,6 +20,6 @@ impl Token {
     }
 
     pub fn _span(&self) -> SourceSpan {
-        (self.start, self.end - self.start).into()
+        self.span
     }
 }

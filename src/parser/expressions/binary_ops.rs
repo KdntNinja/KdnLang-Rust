@@ -1,4 +1,4 @@
-use crate::lexer::token_kind::TokenKind;
+use crate::lexer::token::token_kind::TokenKind;
 use crate::parser::ast::{BinaryOperator, Expression};
 use crate::parser::core::parser::Parser;
 use crate::parser::error::ParserError;

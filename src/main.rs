@@ -3,7 +3,7 @@ mod lexer;
 mod parser;
 
 use crate::interpreter::interpreter::Interpreter;
-use crate::lexer::lexer::Lexer;
+use crate::lexer::Lexer;
 use crate::parser::core::parser::Parser;
 use miette::{Report, Result};
 use std::env;
