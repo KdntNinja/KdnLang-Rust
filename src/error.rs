@@ -1,25 +1,31 @@
 use miette::{Diagnostic, SourceSpan};
 use thiserror::Error;
 
-#[derive(Debug, Error, Diagnostic)]
+#[derive(Debug, Clone, Error, Diagnostic)]
 pub enum LexerError {
     #[error("Unexpected character: {character}")]
-    #[diagnostic(code(lexer.unexpected_character), help("Check if this is a valid token"))]
+    #[diagnostic(
+        code = "lexer.unexpected_character",
+        help = "Check if this is a valid token"
+    )]
     UnexpectedCharacter {
         character: char,
         #[source_code]
         src: String,
-        #[label("Here")]
+        #[label("Unexpected character here")]
         span: SourceSpan,
     },
 
     #[error("Invalid number: {lexeme}")]
-    #[diagnostic(code(lexer.invalid_number))]
+    #[diagnostic(
+        code = "lexer.invalid_number",
+        help = "Check for invalid digits or formatting"
+    )]
     InvalidNumber {
         lexeme: String,
         #[source_code]
         src: String,
-        #[label("This is not a valid number")]
+        #[label("Invalid number")]
         span: SourceSpan,
     },
 }
