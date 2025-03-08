@@ -1,10 +1,6 @@
 mod lexer;
-mod token;
-mod error;
-mod token_kind;
 
-use lexer::Lexer;
-use token_kind::TokenKind;
+use lexer::{Lexer, TokenKind};
 use miette::{Report, Result};
 use std::fs;
 use std::env;
@@ -19,7 +15,7 @@ fn main() -> Result<()> {
         match lexer.next_token() {
             Ok(token) => {
                 println!("{:?}", token);
-                if token.kind == TokenKind::Eof {
+                if token.kind() == &TokenKind::Eof {
                     break;
                 }
             }

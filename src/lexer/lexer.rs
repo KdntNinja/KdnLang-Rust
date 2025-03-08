@@ -1,6 +1,6 @@
-use crate::error::LexerError;
-use crate::token::Token;
-use crate::token_kind::TokenKind;
+use crate::lexer::error::LexerError;
+use crate::lexer::token::Token;
+use crate::lexer::token_kind::TokenKind;
 use miette::Result;
 
 pub struct Lexer {
