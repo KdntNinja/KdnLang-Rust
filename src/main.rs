@@ -1,8 +1,8 @@
 mod lexer;
 mod parser;
+mod interpreter;
 
 use crate::lexer::lexer::Lexer;
-use crate::lexer::token_kind::TokenKind;
 use crate::parser::parser::Parser;
 use miette::{Report, Result};
 use std::env;
@@ -16,24 +16,6 @@ fn main() -> Result<()> {
 
     // Tokenize input
     let mut lexer = Lexer::new(&text);
-
-    // Debug: Print tokens
-    println!("Tokens:");
-    let mut token_debug_lexer = Lexer::new(&text);
-    loop {
-        match token_debug_lexer.next_token() {
-            Ok(token) => {
-                println!("{:?}", token);
-                if token.kind() == &TokenKind::Eof {
-                    break;
-                }
-            }
-            Err(err) => {
-                eprintln!("{}", Report::new(err.clone()));
-                return Err(err.into());
-            }
-        }
-    }
 
     // Parse tokens into AST
     let mut parser = Parser::new(&mut lexer, text.clone())?;
