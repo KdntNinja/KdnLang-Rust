@@ -6,6 +6,10 @@ pub enum TokenKind {
     Identifier(String),
     Number(i64),
 
+    // Special tokens
+    Whitespace(usize), // Count of spaces
+    Newline,
+
     // Operators
     Plus,        // +
     Minus,       // -

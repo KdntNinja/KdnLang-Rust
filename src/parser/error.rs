@@ -14,6 +14,7 @@ pub enum ParserError {
         span: SourceSpan,
     },
 
+    #[allow(dead_code)]
     #[error("Missing token: expected {expected}")]
     #[diagnostic(code(parser::missing_token))]
     MissingToken {

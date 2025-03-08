@@ -33,6 +33,28 @@ impl Lexer {
     pub fn next_token(&mut self) -> Result<Token, LexerError> {
         loop {
             let token = match self.ch {
+                Some(' ') => {
+                    // Count spaces for indentation
+                    let start = self.position;
+                    while self.ch == Some(' ') {
+                        self.advance();
+                    }
+                    let count = self.position - start;
+                    return Ok(Token::new(
+                        TokenKind::Whitespace(count),
+                        start,
+                        self.position,
+                    ));
+                }
+                Some('\n') | Some('\r') => {
+                    let pos = self.position;
+                    self.advance();
+                    // Handle Windows-style CRLF
+                    if self.ch == Some('\n') && self.input.get(self.position - 2) == Some(&'\r') {
+                        self.advance();
+                    }
+                    return Ok(Token::new(TokenKind::Newline, pos, self.position));
+                }
                 Some(ch) if ch.is_whitespace() => {
                     self.advance();
                     continue;

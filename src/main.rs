@@ -1,7 +1,8 @@
+mod interpreter;
 mod lexer;
 mod parser;
-mod interpreter;
 
+use crate::interpreter::interpreter::Interpreter;
 use crate::lexer::lexer::Lexer;
 use crate::parser::parser::Parser;
 use miette::{Report, Result};
@@ -19,18 +20,25 @@ fn main() -> Result<()> {
 
     // Parse tokens into AST
     let mut parser = Parser::new(&mut lexer, text.clone())?;
+
+    // Process the program
     match parser.parse_program() {
         Ok(program) => {
-            println!("\nAST:");
-            println!("{:#?}", program);
+            // Interpret the program
+            let mut interpreter = Interpreter::new(text.clone());
+            match interpreter.interpret(program) {
+                Ok(_) => Ok(()),
+                Err(err) => {
+                    eprintln!("{}", Report::new(err.clone()));
+                    Err(err.into())
+                }
+            }
         }
         Err(err) => {
-            // Create a report from a clone of the error\
+            // Create a report from a clone of the error
             eprintln!("{}", Report::new(err.clone()));
             // Then return the original error
-            return Err(err.into());
+            Err(err.into())
         }
     }
-
-    Ok(())
 }

@@ -9,6 +9,12 @@ pub enum Statement {
         condition: Box<Expression>,
         body: Vec<Statement>,
     },
+    ForLoop {
+        variable: String,
+        start_value: Box<Expression>,
+        end_value: Box<Expression>,
+        body: Vec<Statement>,
+    },
     FunctionCall {
         name: String,
         arguments: Vec<Expression>,
