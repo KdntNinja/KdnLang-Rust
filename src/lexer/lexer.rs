@@ -52,6 +52,7 @@ impl Lexer {
                 Some('}') => Ok(self.token(TokenKind::RightCurlyBracket)),
                 Some(';') => Ok(self.token(TokenKind::Semicolon)),
                 Some(':') => Ok(self.token(TokenKind::Colon)),
+                Some(',') => Ok(self.token(TokenKind::Comma)),
                 Some('&') => {
                     self.advance();
                     if self.ch == Some('&') {

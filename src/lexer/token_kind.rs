@@ -27,4 +27,5 @@ pub enum TokenKind {
     RightCurlyBracket, // }
     Semicolon,         // ;
     Colon,             // :
+    Comma,             // ,
 }
