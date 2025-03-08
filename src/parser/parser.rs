@@ -122,6 +122,7 @@ impl<'a> Parser<'a> {
 
     fn parse_statement(&mut self) -> Result<Statement, ParserError> {
         match self.current_token.as_ref().map(|t| t.kind()) {
+            Some(TokenKind::Identifier(name)) if name == "if" => self.parse_if_statement(),
             Some(TokenKind::Identifier(name)) if name == "for" => self.parse_for_statement(),
             Some(TokenKind::Identifier(name)) if name == "while" => self.parse_while_statement(),
             Some(TokenKind::Identifier(name)) if name == "print" => {
@@ -180,6 +181,78 @@ impl<'a> Parser<'a> {
                     .map_or((0, 1).into(), |t| t._span()),
             }),
         }
+    }
+
+    fn parse_if_statement(&mut self) -> Result<Statement, ParserError> {
+        // Consume 'if' token
+        self.advance_skipping_whitespace()?;
+
+        // Save current indentation level
+        let current_indent = self.current_indentation;
+
+        // Parse condition
+        let condition = Box::new(self.parse_expression()?);
+
+        // Parse statements in the 'then' branch
+        let mut then_branch = Vec::new();
+
+        // Keep parsing statements at a higher indentation level
+        while !self.check_token(TokenKind::Eof) {
+            // If we encounter a line with less indentation, we've exited the if block
+            if self.line_start && self.current_indentation <= current_indent {
+                break;
+            }
+
+            // Check for 'else' at the same indentation level
+            if self.line_start
+                && self.current_indentation == current_indent
+                && self.current_token.as_ref().map_or(false, |t| {
+                    if let TokenKind::Identifier(name) = t.kind() {
+                        name == "else"
+                    } else {
+                        false
+                    }
+                })
+            {
+                break;
+            }
+
+            then_branch.push(self.parse_statement()?);
+        }
+
+        // Parse 'else' branch if present
+        let else_branch = if self.current_token.as_ref().map_or(false, |t| {
+            if let TokenKind::Identifier(name) = t.kind() {
+                name == "else"
+            } else {
+                false
+            }
+        }) {
+            // Consume 'else' token
+            self.advance_skipping_whitespace()?;
+
+            let mut else_statements = Vec::new();
+
+            // Parse statements in the 'else' branch
+            while !self.check_token(TokenKind::Eof) {
+                // If we encounter a line with less indentation, we've exited the else block
+                if self.line_start && self.current_indentation <= current_indent {
+                    break;
+                }
+
+                else_statements.push(self.parse_statement()?);
+            }
+
+            Some(else_statements)
+        } else {
+            None
+        };
+
+        Ok(Statement::If {
+            condition,
+            then_branch,
+            else_branch,
+        })
     }
 
     fn parse_for_statement(&mut self) -> Result<Statement, ParserError> {

@@ -4,7 +4,7 @@ mod parser;
 
 use crate::interpreter::interpreter::Interpreter;
 use crate::lexer::lexer::Lexer;
-use crate::parser::parser::Parser;
+use crate::parser::core::parser::Parser;
 use miette::{Report, Result};
 use std::env;
 use std::fs;

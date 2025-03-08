@@ -1,7 +1,56 @@
-i = 0
+# Variable assignments
+a = 10
+b = 5
+greeting = "Hello, KdnLang!"
 
-while i = 0
-    print(i)
-    if i == 0
-        i = 1
+# Print strings and variables
+print(greeting)
+print("Testing basic arithmetic:")
 
+# Basic arithmetic
+sum = a + b
+difference = a - b
+product = a * b
+quotient = a / b
+
+print("a =", a)
+print("b =", b)
+print("Sum:", sum)
+print("Difference:", difference)
+print("Product:", product)
+print("Quotient:", quotient)
+
+# Conditional statements
+print("\nTesting conditionals:")
+if a > b
+    print("a is greater than b")
+    if a > 2 * b
+        print("a is more than twice b")
+
+# Testing while loop with a counter
+print("\nTesting while loop:")
+i = 1
+while i <= 5
+    print("Counter:", i)
+    i = i + 1
+
+# Fibonacci sequence using a while loop
+print("\nFibonacci sequence:")
+fib1 = 0
+fib2 = 1
+count = 0
+
+while count < 10
+    print(fib1)
+    next_fib = fib1 + fib2
+    fib1 = fib2
+    fib2 = next_fib
+    count = count + 1
+
+# Testing string concatenation
+print("\nTesting string concatenation:")
+name = "KdnLang"
+message = "Welcome to " + name + "!"
+print(message)
+
+print("\nProgram completed successfully!")

@@ -34,11 +34,20 @@ impl Interpreter {
                 self.environment.define(identifier.clone(), value);
                 Ok(())
             }
+            Statement::Block {
+                statements,
+                indentation: _,
+            } => {
+                // Execute all statements in the block
+                for stmt in statements {
+                    self.execute_statement(stmt)?;
+                }
+                Ok(())
+            }
             Statement::While { condition, body } => {
                 while self.evaluate_expression(condition)?.is_truthy() {
-                    for stmt in body {
-                        self.execute_statement(stmt)?;
-                    }
+                    // Execute the body statement (likely a Block)
+                    self.execute_statement(body)?;
                 }
                 Ok(())
             }
@@ -72,10 +81,25 @@ impl Interpreter {
 
                 for i in start..=end {
                     self.environment.define(variable.clone(), Value::Number(i));
+                    // Execute the body statement (likely a Block)
+                    self.execute_statement(body)?;
+                }
+                Ok(())
+            }
+            Statement::If {
+                condition,
+                then_branch,
+                else_branch,
+            } => {
+                // Evaluate the condition
+                let condition_value = self.evaluate_expression(condition)?;
 
-                    for stmt in body {
-                        self.execute_statement(stmt)?;
-                    }
+                if condition_value.is_truthy() {
+                    // Execute the then branch (likely a Block)
+                    self.execute_statement(then_branch)?;
+                } else if let Some(else_stmt) = else_branch {
+                    // Execute the else branch if it exists (likely a Block)
+                    self.execute_statement(else_stmt)?;
                 }
                 Ok(())
             }
@@ -110,6 +134,7 @@ impl Interpreter {
     fn evaluate_expression(&mut self, expression: &Expression) -> Result<Value, InterpreterError> {
         match expression {
             Expression::Number(n) => Ok(Value::Number(*n)),
+            Expression::String(s) => Ok(Value::String(s.clone())),
             Expression::Identifier(name) => {
                 if let Some(value) = self.environment.get(name) {
                     Ok(value.clone())
@@ -155,8 +180,26 @@ impl Interpreter {
                     (BinaryOperator::GreaterThan, Value::Number(l), Value::Number(r)) => {
                         Ok(Value::Boolean(l > r))
                     }
+                    (BinaryOperator::GreaterThanEquals, Value::Number(l), Value::Number(r)) => {
+                        Ok(Value::Boolean(l >= r))
+                    }
                     (BinaryOperator::LessThan, Value::Number(l), Value::Number(r)) => {
                         Ok(Value::Boolean(l < r))
+                    }
+                    (BinaryOperator::LessThanEquals, Value::Number(l), Value::Number(r)) => {
+                        Ok(Value::Boolean(l <= r))
+                    }
+                    // Add support for string concatenation
+                    (BinaryOperator::Add, Value::String(l), Value::String(r)) => {
+                        Ok(Value::String(l.clone() + r))
+                    }
+                    (BinaryOperator::Add, Value::String(l), _) => {
+                        // Convert right value to string and concatenate
+                        Ok(Value::String(l.clone() + &right_val.to_string()))
+                    }
+                    (BinaryOperator::Add, _, Value::String(r)) => {
+                        // Convert left value to string and concatenate
+                        Ok(Value::String(left_val.to_string() + r))
                     }
                     _ => Err(InterpreterError::TypeError {
                         message: format!(
