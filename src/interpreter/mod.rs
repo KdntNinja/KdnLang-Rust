@@ -1,2 +1,2 @@
-mod error;
-mod interpreter;
+pub mod error;
+pub mod interpreter;

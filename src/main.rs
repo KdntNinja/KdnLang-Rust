@@ -25,7 +25,7 @@ fn main() -> Result<()> {
             println!("{:#?}", program);
         }
         Err(err) => {
-            // Create a report from a clone of the error
+            // Create a report from a clone of the error\
             eprintln!("{}", Report::new(err.clone()));
             // Then return the original error
             return Err(err.into());
