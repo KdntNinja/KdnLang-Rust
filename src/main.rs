@@ -1,3 +1,6 @@
+//! Main entry point for the KdnLang interpreter.
+//! Pipeline: tokenization → parsing → interpretation
+
 mod interpreter;
 mod lexer;
 mod parser;
@@ -7,10 +10,14 @@ use crate::interpreter::Interpreter;
 use crate::lexer::tokenize;
 use crate::token::Token;
 use miette::{Report, Result, miette};
-use pest::Parser;
 use std::env;
 use std::fs;
 
+/// Drives the KdnLang interpreter pipeline:
+/// 1. Reads source file from command-line argument
+/// 2. Tokenizes source code
+/// 3. Parses tokens into AST
+/// 4. Interprets AST for result
 fn main() -> Result<()> {
     // Get the filename from the command line arguments.
     let filename: String = env::args()
@@ -28,7 +35,7 @@ fn main() -> Result<()> {
     }
 
     // Create a new parser with the tokens.
-    let mut parser = Parser::new(tokens);
+    let mut parser = crate::parser::KdnLangParser::new(tokens);
     // Parse the tokens into an abstract syntax tree (AST).
     let ast = parser.parse();
 

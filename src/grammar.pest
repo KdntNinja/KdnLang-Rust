@@ -1,19 +1,21 @@
-WHITESPACE = _{ " " | "\t" | "\n" }
+//! KdnLang grammar definition for the Pest parser generator.
 
-program = { SOI ~ expression ~ EOI }
+// Program is the entry point
+program = { SOI ~ expr ~ EOI }
 
-expression = _{ term ~ (plus | minus ~ term)* }
+// Expression hierarchy following operator precedence
+expr = { term ~ (add_op ~ term)* }
+term = { factor ~ (mul_op ~ factor)* }
+factor = { primary }
+primary = { number | identifier | "(" ~ expr ~ ")" }
 
-term = _{ factor ~ (asterisk | slash ~ factor)* }
-
-factor = _{ number | identifier | left_paren ~ expression ~ right_paren }
-
-plus = { "+" }
-minus = { "-" }
-asterisk = { "*" }
-slash = { "/" }
-left_paren = { "(" }
-right_paren = { ")" }
-
+// Token types
 number = @{ ASCII_DIGIT+ }
-identifier = @{ ASCII_ALPHANUMERIC+ }
+identifier = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC)* }
+
+// Operators
+add_op = { "+" | "-" }
+mul_op = { "*" | "/" }
+
+// Whitespace handling
+WHITESPACE = _{ " " | "\t" | "\n" | "\r" }

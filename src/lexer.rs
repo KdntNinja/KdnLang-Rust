@@ -1,33 +1,54 @@
+//! Lexical analysis (tokenization) for KdnLang using Logos.
+
 use crate::token::Token;
 use logos::Logos;
+use miette::miette;
 
-// Define the Logos lexer for the language
+/// Logos-specific token types for internal lexer use.
 #[derive(Logos, Debug, PartialEq)]
 pub enum LogosToken {
+    /// '+'
     #[token("+")]
     Plus,
+    
+    /// '-'
     #[token("-")]
     Minus,
+    
+    /// The multiplication operator '*'
     #[token("*")]
     Asterisk,
+    
+    /// The division operator '/'
     #[token("/")]
     Slash,
+    
+    /// The left parenthesis '('
     #[token("(")]
     LeftParen,
+    
+    /// The right parenthesis ')'
     #[token(")")]
     RightParen,
-    #[regex(r"[0-9]+", |lex| lex.slice().parse())]
+    
+    /// Integer literal - parses digits to i32
+    #[regex(r"[0-9]+", |lex| lex.slice().parse::<i32>().map_err(|_| ()))]
     Number(i32),
-    #[regex(r"[a-zA-Z][a-zA-Z0-9]*")]
+    
+    /// Identifier - letter followed by alphanumerics
+    #[regex(r"[a-zA-Z][a-zA-Z0-9]*", |lex| String::from(lex.slice()))]
     Identifier(String),
+    
+    /// Skipped whitespace
     #[regex(r"[ \t\n\f]+", logos::skip)]
     Error,
 }
 
-// Function to tokenize the source code using the Logos lexer
+/// Converts source code string into tokens.
+/// Returns Result with token vector or error diagnostic.
 pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
     // Create a new Logos lexer with the source code
-    let mut lexer = Logos::lexer(source_code);
+    let mut lexer = LogosToken::lexer(source_code);
 
     // Convert the Logos tokens into our Token enum
     let mut tokens: Vec<Token> = Vec::new();
@@ -43,6 +64,9 @@ pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
             Ok(LogosToken::Identifier(id)) => tokens.push(Token::Identifier(id)),
             Ok(LogosToken::Error) => {
                 tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap()))
+            }
+            Err(_) => {
+                return Err(miette!("Lexer error at position {}", lexer.span().start));
             }
         }
     }

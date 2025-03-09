@@ -1,44 +1,33 @@
+//! Interpreter for KdnLang expressions.
+
 use crate::parser::Expr;
 
-// The Interpreter struct is responsible for evaluating expressions.
+/// Evaluates KdnLang expressions by traversing the AST.
 pub struct Interpreter;
 
 impl Interpreter {
-    // The visit method takes an expression and evaluates it.
-    // It matches the expression type and calls the appropriate method.
+    /// Evaluates an expression recursively.
+    /// Returns the numeric result of the evaluation.
     pub fn visit(&self, expr: &Expr) -> i32 {
         match expr {
-            Expr::Number(n) => self.visit_number(*n),
-            Expr::BinaryOp { left, op, right } => self.visit_binary_op(left, *op, right),
-            Expr::Identifier(id) => self.visit_identifier(id),
+            Expr::Number(n) => *n,
+            Expr::BinaryOp { left, op, right } => {
+                let left_val = self.visit(left);
+                let right_val = self.visit(right);
+                
+                match op {
+                    '+' => left_val + right_val,
+                    '-' => left_val - right_val,
+                    '*' => left_val * right_val,
+                    '/' => left_val / right_val,
+                    _ => panic!("Unknown operator: {}", op),
+                }
+            },
+            Expr::Identifier(_) => {
+                // In a more advanced interpreter, this would look up variable values
+                // For now, we'll return 0 for identifiers
+                0
+            }
         }
-    }
-
-    // The visit_binary_op method handles binary operations.
-    // It evaluates the left and right expressions and applies the operator.
-    fn visit_binary_op(&self, left: &Expr, op: char, right: &Expr) -> i32 {
-        let left_val = self.visit(left);
-        let right_val = self.visit(right);
-
-        match op {
-            '+' => left_val + right_val,
-            '-' => left_val - right_val,
-            '*' => left_val * right_val,
-            '/' => left_val / right_val,
-            _ => panic!("Unknown binary operator: {}", op),
-        }
-    }
-
-    // The visit_number method handles number literals.
-    // It simply returns the number.
-    fn visit_number(&self, n: i32) -> i32 {
-        n
-    }
-
-    // The visit_identifier method handles identifiers.
-    // It currently returns a placeholder value.
-    fn visit_identifier(&self, _id: &String) -> i32 {
-        // Placeholder implementation
-        0
     }
 }
