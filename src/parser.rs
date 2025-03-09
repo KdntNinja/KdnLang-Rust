@@ -1,5 +1,6 @@
 use pest::Parser;
 use pest_derive::Parser;
+use crate::token::Token;
 
 // Define the pest parser for the language
 #[derive(Parser)]
@@ -21,13 +22,13 @@ pub enum Expr {
     Identifier(String),
 }
 
-// The Parser struct is responsible for parsing tokens into an abstract syntax tree (AST).
-pub struct Parser {
+// The MyParser struct is responsible for parsing tokens into an abstract syntax tree (AST).
+pub struct MyParser {
     tokens: Vec<Token>,
     position: usize,
 }
 
-impl Parser {
+impl MyParser {
     // Creates a new parser with the given tokens.
     pub fn new(tokens: Vec<Token>) -> Self {
         Self {
