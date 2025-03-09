@@ -1,44 +1,26 @@
-mod interpreter;
 mod lexer;
 mod parser;
+mod interpreter;
+mod tokens;
 
-use crate::interpreter::interpreter::Interpreter;
-use crate::lexer::Lexer;
-use crate::parser::core::parser::Parser;
-use miette::{Report, Result};
+use miette::{Report, Result, miette};
 use std::env;
 use std::fs;
+use crate::lexer::tokenize;
+use crate::tokens::Tokens;
 
 fn main() -> Result<()> {
-    let filename = env::args()
+    let filename: String = env::args()
         .nth(1)
-        .ok_or_else(|| Report::msg("No filename provided"))?;
-    let text = fs::read_to_string(&filename).unwrap();
+        .ok_or_else(|| miette!("No filename provided"))?;
 
-    // Tokenize input
-    let mut lexer = Lexer::new(&text);
+    let text: String = fs::read_to_string(&filename)
+        .map_err(|e| Report::msg(format!("Failed to read file '{}': {}", filename, e)))?;
 
-    // Parse tokens into AST
-    let mut parser = Parser::new(&mut lexer, text.clone())?;
-
-    // Process the program
-    match parser.parse_program() {
-        Ok(program) => {
-            // Interpret the program
-            let mut interpreter = Interpreter::new(text.clone());
-            match interpreter.interpret(program) {
-                Ok(_) => Ok(()),
-                Err(err) => {
-                    eprintln!("{}", Report::new(err.clone()));
-                    Err(err.into())
-                }
-            }
-        }
-        Err(err) => {
-            // Create a report from a clone of the error
-            eprintln!("{}", Report::new(err.clone()));
-            // Then return the original error
-            Err(err.into())
-        }
+    let tokens: Vec<Tokens> = tokenize(&text)?;
+    for token in tokens {
+        println!("{:?}", token);
     }
+
+    Ok(())
 }
