@@ -1,5 +1,6 @@
 use pest::Parser;
 use pest_derive::Parser;
+use crate::token::Token;
 
 // Define the pest parser for the language
 #[derive(Parser)]
