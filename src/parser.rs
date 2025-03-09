@@ -1,11 +1,14 @@
+use crate::token::Token;
 use pest::Parser;
 use pest_derive::Parser;
-use crate::token::Token;
 
 // Define the pest parser for the language
 #[derive(Parser)]
 #[grammar = "grammar.pest"]
-pub struct KdnLangParser;
+pub struct KdnLangParser {
+    tokens: Vec<Token>,
+    position: usize,
+}
 
 // Represents an expression in the language.
 #[derive(Debug)]
@@ -20,12 +23,6 @@ pub enum Expr {
     },
     // Represents an identifier in the expression.
     Identifier(String),
-}
-
-// The KdnLangParser struct is responsible for parsing tokens into an abstract syntax tree (AST).
-pub struct KdnLangParser {
-    tokens: Vec<Token>,
-    position: usize,
 }
 
 impl KdnLangParser {

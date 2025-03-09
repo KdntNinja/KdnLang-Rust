@@ -1,5 +1,5 @@
-use logos::Logos;
 use crate::token::Token;
+use logos::Logos;
 
 // Define the Logos lexer for the language
 #[derive(Logos, Debug, PartialEq)]
@@ -34,15 +34,15 @@ pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
     let mut tokens: Vec<Token> = Vec::new();
     while let Some(lexeme) = lexer.next() {
         match lexeme {
-            LogosToken::Plus => tokens.push(Token::Plus),
-            LogosToken::Minus => tokens.push(Token::Minus),
-            LogosToken::Asterisk => tokens.push(Token::Asterisk),
-            LogosToken::Slash => tokens.push(Token::Slash),
-            LogosToken::LeftParen => tokens.push(Token::LeftParen),
-            LogosToken::RightParen => tokens.push(Token::RightParen),
-            LogosToken::Number(n) => tokens.push(Token::Number(n)),
-            LogosToken::Identifier(id) => tokens.push(Token::Identifier(id)),
-            LogosToken::Error => tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap())),
+            Err(LogosToken::Plus) => tokens.push(Token::Plus),
+            Err(LogosToken::Minus) => tokens.push(Token::Minus),
+            Err(LogosToken::Asterisk) => tokens.push(Token::Asterisk),
+            Err(LogosToken::Slash) => tokens.push(Token::Slash),
+            Err(LogosToken::LeftParen) => tokens.push(Token::LeftParen),
+            Err(LogosToken::RightParen) => tokens.push(Token::RightParen),
+            Err(LogosToken::Number(n)) => tokens.push(Token::Number(n)),
+            Err(LogosToken::Identifier(id)) => tokens.push(Token::Identifier(id)),
+            Err(LogosToken::Error) => tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap())),
         }
     }
 

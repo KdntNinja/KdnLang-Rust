@@ -5,7 +5,7 @@ mod token;
 
 use crate::interpreter::Interpreter;
 use crate::lexer::tokenize;
-use crate::parser::Parser;
+use pest::parser::Parser;
 use crate::token::Token;
 use miette::{Report, Result, miette};
 use std::env;
@@ -20,7 +20,7 @@ fn main() -> Result<()> {
     // Read the contents of the file.
     let text: String = fs::read_to_string(&filename)
         .map_err(|e| Report::msg(format!("Failed to read file '{}': {}", filename, e)))?;
-    
+
     // Tokenize the source code using the Logos lexer.
     let tokens: Vec<Token> = tokenize(&text)?;
     for i in &tokens {
