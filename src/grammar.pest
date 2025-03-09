@@ -1,0 +1,19 @@
+WHITESPACE = _{ " " | "\t" | "\n" }
+
+program = { SOI ~ expression ~ EOI }
+
+expression = _{ term ~ (plus | minus ~ term)* }
+
+term = _{ factor ~ (asterisk | slash ~ factor)* }
+
+factor = _{ number | identifier | left_paren ~ expression ~ right_paren }
+
+plus = { "+" }
+minus = { "-" }
+asterisk = { "*" }
+slash = { "/" }
+left_paren = { "(" }
+right_paren = { ")" }
+
+number = @{ ASCII_DIGIT+ }
+identifier = @{ ASCII_ALPHANUMERIC+ }
