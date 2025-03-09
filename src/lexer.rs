@@ -28,7 +28,7 @@ pub enum LogosToken {
 // Function to tokenize the source code using the Logos lexer
 pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
     // Create a new Logos lexer with the source code
-    let mut lexer = LogosToken::lexer(source_code);
+    let mut lexer = Logos::lexer(source_code);
 
     // Convert the Logos tokens into our Token enum
     let mut tokens: Vec<Token> = Vec::new();

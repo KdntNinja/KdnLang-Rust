@@ -10,6 +10,7 @@ impl Interpreter {
         match expr {
             Expr::Number(n) => self.visit_number(*n),
             Expr::BinaryOp { left, op, right } => self.visit_binary_op(left, *op, right),
+            Expr::Identifier(id) => self.visit_identifier(id),
         }
     }
 
@@ -32,5 +33,12 @@ impl Interpreter {
     // It simply returns the number.
     fn visit_number(&self, n: i32) -> i32 {
         n
+    }
+
+    // The visit_identifier method handles identifiers.
+    // It currently returns a placeholder value.
+    fn visit_identifier(&self, _id: &String) -> i32 {
+        // Placeholder implementation
+        0
     }
 }
