@@ -5,9 +5,9 @@ mod token;
 
 use crate::interpreter::Interpreter;
 use crate::lexer::tokenize;
-use pest::Parser;
 use crate::token::Token;
 use miette::{Report, Result, miette};
+use pest::Parser;
 use std::env;
 use std::fs;
 

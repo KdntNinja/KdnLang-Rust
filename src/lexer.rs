@@ -41,7 +41,9 @@ pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
             Ok(LogosToken::RightParen) => tokens.push(Token::RightParen),
             Ok(LogosToken::Number(n)) => tokens.push(Token::Number(n)),
             Ok(LogosToken::Identifier(id)) => tokens.push(Token::Identifier(id)),
-            Ok(LogosToken::Error) => tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap())),
+            Ok(LogosToken::Error) => {
+                tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap()))
+            }
         }
     }
 
