@@ -20,7 +20,6 @@ pub enum LogosToken {
     Number(i32),
     #[regex(r"[a-zA-Z][a-zA-Z0-9]*")]
     Identifier(String),
-    #[error]
     #[regex(r"[ \t\n\f]+", logos::skip)]
     Error,
 }
@@ -34,15 +33,15 @@ pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
     let mut tokens: Vec<Token> = Vec::new();
     while let Some(lexeme) = lexer.next() {
         match lexeme {
-            Err(LogosToken::Plus) => tokens.push(Token::Plus),
-            Err(LogosToken::Minus) => tokens.push(Token::Minus),
-            Err(LogosToken::Asterisk) => tokens.push(Token::Asterisk),
-            Err(LogosToken::Slash) => tokens.push(Token::Slash),
-            Err(LogosToken::LeftParen) => tokens.push(Token::LeftParen),
-            Err(LogosToken::RightParen) => tokens.push(Token::RightParen),
-            Err(LogosToken::Number(n)) => tokens.push(Token::Number(n)),
-            Err(LogosToken::Identifier(id)) => tokens.push(Token::Identifier(id)),
-            Err(LogosToken::Error) => tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap())),
+            Ok(LogosToken::Plus) => tokens.push(Token::Plus),
+            Ok(LogosToken::Minus) => tokens.push(Token::Minus),
+            Ok(LogosToken::Asterisk) => tokens.push(Token::Asterisk),
+            Ok(LogosToken::Slash) => tokens.push(Token::Slash),
+            Ok(LogosToken::LeftParen) => tokens.push(Token::LeftParen),
+            Ok(LogosToken::RightParen) => tokens.push(Token::RightParen),
+            Ok(LogosToken::Number(n)) => tokens.push(Token::Number(n)),
+            Ok(LogosToken::Identifier(id)) => tokens.push(Token::Identifier(id)),
+            Ok(LogosToken::Error) => tokens.push(Token::Unknown(lexer.slice().chars().next().unwrap())),
         }
     }
 
