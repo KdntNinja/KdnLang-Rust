@@ -22,13 +22,13 @@ pub enum Expr {
     Identifier(String),
 }
 
-// The Parser struct is responsible for parsing tokens into an abstract syntax tree (AST).
-pub struct Parser {
+// The KdnLangParser struct is responsible for parsing tokens into an abstract syntax tree (AST).
+pub struct KdnLangParser {
     tokens: Vec<Token>,
     position: usize,
 }
 
-impl Parser {
+impl KdnLangParser {
     // Creates a new parser with the given tokens.
     pub fn new(tokens: Vec<Token>) -> Self {
         Self {
