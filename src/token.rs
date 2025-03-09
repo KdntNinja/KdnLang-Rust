@@ -1,12 +1,12 @@
 #[derive(Debug)]
-pub enum Tokens {
-    Number(String),
+pub enum Token {
     Identifier(String),
+    Number(i32),
     Plus,
-    Minus,
     Asterisk,
-    Slash,
     LeftParen,
     RightParen,
+    Minus,
+    Slash,
     Unknown(char),
 }

@@ -1,13 +1,14 @@
+mod interpreter;
 mod lexer;
 mod parser;
-mod interpreter;
-mod tokens;
+mod token;
 
+use crate::lexer::tokenize;
+use crate::parser::Parser;
+use crate::token::Token;
 use miette::{Report, Result, miette};
 use std::env;
 use std::fs;
-use crate::lexer::tokenize;
-use crate::tokens::Tokens;
 
 fn main() -> Result<()> {
     let filename: String = env::args()
@@ -16,11 +17,15 @@ fn main() -> Result<()> {
 
     let text: String = fs::read_to_string(&filename)
         .map_err(|e| Report::msg(format!("Failed to read file '{}': {}", filename, e)))?;
-
-    let tokens: Vec<Tokens> = tokenize(&text)?;
-    for token in tokens {
-        println!("{:?}", token);
+    let tokens: Vec<Token> = tokenize(&text)?;
+    for i in &tokens {
+        println!("{:?}", i);
     }
+
+    let mut parser = Parser::new(tokens);
+    let ast = parser.parse();
+
+    println!("{:#?}", ast);
 
     Ok(())
 }

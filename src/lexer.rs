@@ -1,19 +1,21 @@
+use crate::token::Token;
+use miette::Report;
 use std::iter::Peekable;
 use std::str::Chars;
-use crate::tokens::Tokens;
 
-pub fn tokenize(source_code: &str) -> miette::Result<Vec<Tokens>> {
-    let mut tokens: Vec<Tokens> = Vec::new();
+pub fn tokenize(source_code: &str) -> miette::Result<Vec<Token>> {
+    let mut tokens: Vec<Token> = Vec::new();
     let mut chars: Peekable<Chars> = source_code.chars().peekable();
 
     while let Some(ch) = chars.next() {
-        let token: Tokens = match ch {
-            '+' => Tokens::Plus,
-            '-' => Tokens::Minus,
-            '*' => Tokens::Asterisk,
-            '/' => Tokens::Slash,
-            '(' => Tokens::LeftParen,
-            ')' => Tokens::RightParen,
+        let token: Token = match ch {
+            '+' => Token::Plus,
+            '-' => Token::Minus,
+            '*' => Token::Asterisk,
+            '/' => Token::Slash,
+            '(' => Token::LeftParen,
+            ')' => Token::RightParen,
+
             '0'..='9' => {
                 let mut number = ch.to_string();
                 while let Some(next) = chars.peek() {
@@ -23,8 +25,11 @@ pub fn tokenize(source_code: &str) -> miette::Result<Vec<Tokens>> {
                         break;
                     }
                 }
-                Tokens::Number(number)
+                Token::Number(number.parse().map_err(|e| {
+                    Report::msg(format!("Failed to parse number '{}': {}", number, e))
+                })?)
             }
+
             'a'..='z' | 'A'..='Z' | '_' => {
                 let mut identifier = ch.to_string();
                 while let Some(next) = chars.peek() {
@@ -34,10 +39,10 @@ pub fn tokenize(source_code: &str) -> miette::Result<Vec<Tokens>> {
                         break;
                     }
                 }
-                Tokens::Identifier(identifier)
+                Token::Identifier(identifier)
             }
             _ if ch.is_whitespace() => continue,
-            _ => Tokens::Unknown(ch),
+            _ => Token::Unknown(ch),
         };
         tokens.push(token);
     }
